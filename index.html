@@ -178,7 +178,16 @@
                 hero_sub: "Access the entire tarmacq ecosystem with a single secure login.",
                 active_session: "Active Session",
                 sign_out: "Sign out",
-                signed_out_msg: "Successfully signed out"
+                signed_out_msg: "Successfully signed out",
+                // NEW OTP KEYS
+                verify_title: "Verify Account",
+                verify_subtitle: "We sent a 6-digit code to %s. Please check your inbox and spam folder.",
+                code_placeholder: "6-Digit Code",
+                verify_btn: "Verify Account",
+                resend_code: "Resend Code",
+                resend_fail: "Failed to resend code: ",
+                resend_success: "Code successfully resent!",
+                invalid_code: "Invalid code or verification expired."
             },
             es: { // Spanish
                 login_title: "Iniciar Sesión",
@@ -204,7 +213,16 @@
                 hero_sub: "Accede a todo el ecosistema con un solo login.",
                 active_session: "Sesión Activa",
                 sign_out: "Cerrar sesión",
-                signed_out_msg: "Sesión cerrada exitosamente"
+                signed_out_msg: "Sesión cerrada exitosamente",
+                // NEW OTP KEYS
+                verify_title: "Verificar Cuenta",
+                verify_subtitle: "Enviamos un código de 6 dígitos a %s. Por favor, revisa tu bandeja.",
+                code_placeholder: "Código de 6 dígitos",
+                verify_btn: "Verificar Cuenta",
+                resend_code: "Reenviar Código",
+                resend_fail: "Error al reenviar código: ",
+                resend_success: "¡Código reenviado con éxito!",
+                invalid_code: "Código no válido o verificación caducada."
             },
             fr: { // French
                 login_title: "Connexion",
@@ -230,7 +248,16 @@
                 hero_sub: "Accédez à tout l'écosystème tarmacq.",
                 active_session: "Session Active",
                 sign_out: "Se déconnecter",
-                signed_out_msg: "Déconnexion réussie"
+                signed_out_msg: "Déconnexion réussie",
+                // NEW OTP KEYS
+                verify_title: "Vérifier le Compte",
+                verify_subtitle: "Nous avons envoyé un code de 6 chiffres à %s. Veuillez vérifier votre boîte.",
+                code_placeholder: "Code à 6 chiffres",
+                verify_btn: "Vérifier le Compte",
+                resend_code: "Renvoyer le code",
+                resend_fail: "Échec du renvoi du code : ",
+                resend_success: "Code renvoyé avec succès !",
+                invalid_code: "Code non valide ou vérification expirée."
             }
         };
 
@@ -255,8 +282,13 @@
             if(heroSub) heroSub.innerText = translations[currentLang].hero_sub;
         }
 
-        function t(key) {
-            return translations[currentLang][key] || translations['en'][key] || key;
+        function t(key, args = []) {
+            let str = translations[currentLang][key] || translations['en'][key] || key;
+            args.forEach((arg, index) => {
+                // Simple replacement for %s
+                str = str.replace(`%s`, arg);
+            });
+            return str;
         }
 
         // --- APP INITIALIZATION ---
@@ -351,6 +383,9 @@
                     break;
                 case 'register':
                     container.innerHTML = getRegisterView();
+                    break;
+                case 'verify_code': // ADDED NEW VIEW
+                    container.innerHTML = getVerifyCodeView(payload.email);
                     break;
             }
         }
@@ -532,6 +567,40 @@
             `;
         }
 
+        // --- NEW VIEW TEMPLATE FOR OTP ---
+        function getVerifyCodeView(email) {
+            return `
+                <div class="animate-slide-up">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold mb-2 text-slate-900">${t('verify_title')}</h1>
+                        <p class="text-slate-500">${t('verify_subtitle', [email])}</p>
+                    </div>
+
+                    <form onsubmit="handleCodeVerification(event, '${email}')" class="space-y-6">
+                        <div class="relative group input-group">
+                            <i data-lucide="key-round" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
+                            <input type="text" id="verification-code" required placeholder="${t('code_placeholder')}" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+                                class="w-full bg-white text-slate-900 pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400 text-center text-lg font-mono tracking-widest">
+                        </div>
+
+                        <button type="submit" id="submit-code-btn"
+                            class="w-full bg-brand-600 hover:bg-brand-900 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center">
+                            <span>${t('verify_btn')}</span>
+                            <div id="spinner-code" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2"></div>
+                        </button>
+                        
+                        <p class="pt-2 text-center text-sm text-slate-500">
+                            Didn't receive the code? 
+                            <button type="button" onclick="resendCode('${email}')" class="text-brand-600 font-semibold hover:underline">
+                                ${t('resend_code')}
+                            </button>
+                        </p>
+                    </form>
+                </div>
+            `;
+        }
+        // --- END NEW VIEW TEMPLATE ---
+
         // --- ACTIONS & HANDLERS ---
 
         function selectAccount(email) {
@@ -583,7 +652,7 @@
                 return;
             }
 
-            setLoading(true);
+            setLoading(true, 'submit-btn', 'spinner');
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -610,10 +679,11 @@
             } catch (err) {
                 console.error("Login Error:", err);
                 showToast(err.message || "Invalid credentials", "error");
-                setLoading(false);
+                setLoading(false, 'submit-btn', 'spinner');
             }
         }
 
+        // MODIFIED FUNCTION FOR OTP FLOW
         async function handleRegister(e) {
             e.preventDefault();
             if(!supabase) {
@@ -621,7 +691,7 @@
                 return;
             }
 
-            setLoading(true);
+            setLoading(true, 'submit-btn', 'spinner');
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-password').value;
             const name = document.getElementById('reg-name').value;
@@ -639,31 +709,90 @@
 
                 console.log("Registration Successful:", data);
                 
-                if (data.session) {
+                // --- OTP FLOW CHANGE START ---
+                // Supabase is set to 'Email OTP', so data.session will be null, but data.user will be present.
+                if (data.user) {
+                    showToast("Registration successful! Check your email for the code.", "success");
+                    setLoading(false, 'submit-btn', 'spinner');
+                    
+                    // RENDER THE NEW CODE ENTRY SCREEN
+                    render('verify_code', { email }); 
+                } else {
+                    // Fallback for unexpected immediate session (link-based)
                     showToast("Account created! Redirecting...", "success");
                     rememberAccount(email, name);
                     setTimeout(() => {
                         window.location.href = REDIRECT_URL;
                     }, 1500);
-                } else {
-                    showToast("Check your email to confirm your account.", "success");
-                    setLoading(false);
                 }
+                // --- OTP FLOW CHANGE END ---
 
             } catch (err) {
                 console.error("Registration Error:", err);
                 showToast(err.message || "Failed to create account", "error");
-                setLoading(false);
+                setLoading(false, 'submit-btn', 'spinner');
+            }
+        }
+
+        // NEW FUNCTION: Handles the verification code exchange.
+        async function handleCodeVerification(e, email) {
+            e.preventDefault();
+            if(!supabase) return;
+
+            const code = document.getElementById('verification-code').value;
+            setLoading(true, 'submit-code-btn', 'spinner-code');
+            
+            try {
+                // Use the verifyOtp method, specifying the type as 'signup'
+                const { data, error } = await supabase.auth.verifyOtp({
+                    email: email,
+                    token: code,
+                    type: 'signup', // Crucial: tells Supabase this is for registration confirmation
+                });
+
+                if (error) throw error;
+
+                // Success: User is now signed in and verified
+                showToast("Verification successful! Redirecting...", "success");
+                
+                // Remember the account and redirect
+                const displayName = data.user.user_metadata?.full_name || email.split('@')[0];
+                rememberAccount(email, displayName); 
+
+                setTimeout(() => {
+                    window.location.href = REDIRECT_URL;
+                }, 1500);
+
+            } catch (err) {
+                console.error("Verification Error:", err);
+                showToast(t('invalid_code'), "error");
+                setLoading(false, 'submit-code-btn', 'spinner-code');
+            }
+        }
+
+        // NEW FUNCTION: Resends the OTP code.
+        async function resendCode(email) {
+            showToast("Resending code...", "success");
+            const { error } = await supabase.auth.resend({
+                type: 'signup',
+                email: email,
+            });
+            
+            if (error) {
+                showToast(t('resend_fail') + error.message, "error");
+            } else {
+                showToast(t('resend_success'), "success");
             }
         }
 
         // --- UI UTILS ---
 
-        function setLoading(isLoading) {
-            const btn = document.getElementById('submit-btn');
+        // MODIFIED FUNCTION to accept custom button/spinner IDs
+        function setLoading(isLoading, btnId = 'submit-btn', spinnerId = 'spinner') {
+            const btn = document.getElementById(btnId);
             if(!btn) return;
             
-            const spinner = document.getElementById('spinner');
+            const spinner = document.getElementById(spinnerId);
             const span = btn.querySelector('span');
 
             if (isLoading) {
