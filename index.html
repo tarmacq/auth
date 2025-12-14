@@ -7,142 +7,217 @@
     <meta property="og:description" content="tarmacq auth, One account Millions of possibilities.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.tarmacq.com">
-    <meta property="og:image" content="https://www.tarmacq.com/logo.png">
+    <meta property="og:image" content="https://www.tarmacq.com/Untitled (10).png">
     <meta property="og:site_name" content="tarmacq">
-    <title>tarmacq</title>
+    <title>tarmacq - auth</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="icon" href="https://www.tarmacq.com/logo.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://www.tarmacq.com/favicon.ico">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-        body { font-family: 'Inter', sans-serif; }
-
-        /* Animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        :root {
+            --bg-dark: #050511;
+            --purple-glow: #5b2fa6;
+            --warm-glow: #ffcf96;
+            --text-white: #ffffff;
+            --text-gray: #a1a1aa;
+            --accent-pink: #ec4899;
+            --accent-blue: #3b82f6;
         }
-        @keyframes pulse-slow {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.05); opacity: 0.4; }
+
+        body { 
+            font-family: 'SF Pro Display', sans-serif; 
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            overflow-x: hidden;
         }
+                .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .logo img {
+            height: 200px;
+            width: auto;
+            border-radius: 50%;
+        }
+
+        /* --- Background Gradient (From Landing Page) --- */
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(255, 208, 150, 0.4) 0%, rgba(91, 47, 166, 0.1) 40%, transparent 60%),
+                radial-gradient(circle at 80% 50%, rgba(76, 29, 149, 0.4) 0%, transparent 60%),
+                linear-gradient(135deg, #1e1b4b 0%, #020617 100%);
+            filter: blur(20px);
+        }
+
+        /* --- Animations --- */
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
-        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        
-        /* Custom Utilities */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
+
+        .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
         
-        .input-group:focus-within svg { color: #2563eb; }
+        /* --- Glass Components --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-pink);
+            outline: none;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+        }
+
+        /* --- Custom Button Style --- */
+        .btn-gradient {
+            background: linear-gradient(90deg, #837ffb, #ec4899);
+            color: white;
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+        }
+        .btn-gradient:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+        }
+        .btn-gradient:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        /* --- Orbit Animation (Simplified from Landing) --- */
+        .orbit-ring {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 30px rgba(91, 47, 166, 0.1);
+        }
 
         /* Toast Notification */
         #toast {
             visibility: hidden;
             min-width: 250px;
-            background-color: #333;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
             color: #fff;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 50px;
             padding: 16px;
             position: fixed;
-            z-index: 50;
+            z-index: 100;
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s, bottom 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-        #toast.error { background-color: #ef4444; }
-        #toast.success { background-color: #10b981; }
+        #toast.error { border-color: #ef4444; color: #fca5a5; }
+        #toast.success { border-color: #10b981; color: #6ee7b7; }
     </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
                     colors: {
-                        brand: {
-                            50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a',
-                        }
+                        slate: { 800: '#1e293b' }, // Keeping for compatibility logic
+                        gray: { 400: '#a1a1aa' }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="min-h-screen w-full flex flex-col md:flex-row bg-white text-slate-800 overflow-x-hidden">
+<body class="min-h-screen w-full flex flex-col md:flex-row overflow-x-hidden relative">
 
-    <div id="config-alert" class="hidden fixed top-0 left-0 w-full bg-red-500 text-white text-center py-2 z-50 text-sm font-medium">
+    <div class="background-gradient"></div>
+
+    <div id="config-alert" class="hidden fixed top-0 left-0 w-full bg-red-500/90 text-white text-center py-2 z-50 text-sm font-medium backdrop-blur-sm">
         Setup Required: Please check Supabase keys in the code.
     </div>
 
-    <div class="w-full md:w-1/2 flex flex-col justify-between p-8 md:p-12 lg:p-20 animate-fade-in relative">
+    <div class="w-full md:w-1/2 flex flex-col justify-between p-8 md:p-12 lg:p-20 animate-fade-in relative z-10">
         
-        <div class="mb-8 flex items-center gap-3">
-            <img src="https://www.tarmacq.com/logo.png" alt="tarmacq" class="h-10 w-auto object-contain">
-            <span class="text-2xl font-bold tracking-tight text-slate-900">tarmacq</span>
-        </div>
+    <a href="#" class="logo">
+                <img src="https://www.tarmacq.com/Untitled%20(12).png" alt="tarmacq">
+            
+            </a>
 
         <div id="app-container" class="max-w-md w-full mx-auto relative min-h-[400px]">
             </div>
 
-        <div class="mt-auto pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 space-y-2 md:space-y-0">
+        <div class="mt-auto pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400 space-y-2 md:space-y-0">
             <div class="flex space-x-4">
-                <a href="https://www.tarmacq.com/terms" class="hover:text-slate-600 transition-colors">Terms</a>
-                <a href="https://www.tarmacq.com/pp" class="hover:text-slate-600 transition-colors">Privacy</a>
+                <a href="https://www.tarmacq.com/terms" class="hover:text-white transition-colors">Terms</a>
+                <a href="https://www.tarmacq.com/pp" class="hover:text-white transition-colors">Privacy</a>
             </div>
-            <button id="lang-btn" class="flex items-center hover:text-slate-600 transition-colors uppercase font-semibold">
+            <button id="lang-btn" class="flex items-center hover:text-white transition-colors uppercase font-semibold">
                 <i data-lucide="globe" class="w-3 h-3 mr-1"></i> <span id="current-lang-display">EN</span>
             </button>
         </div>
     </div>
 
-    <div class="hidden md:flex w-1/2 bg-slate-50 relative overflow-hidden items-center justify-center p-12">
-        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
-            <div class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-purple-300/30 rounded-full blur-[120px] mix-blend-multiply animate-pulse-slow"></div>
-            <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-300/30 rounded-full blur-[100px] mix-blend-multiply animate-pulse-slow" style="animation-delay: 1s"></div>
-            <div class="absolute top-[40%] left-[30%] w-[400px] h-[400px] bg-pink-300/30 rounded-full blur-[80px] mix-blend-multiply animate-pulse-slow" style="animation-delay: 2s"></div>
+    <div class="hidden md:flex w-1/2 relative items-center justify-center p-12 overflow-hidden">
+        <div class="absolute w-[600px] h-[600px] opacity-60">
+             <div class="orbit-ring w-[300px] h-[300px]"></div>
+             <div class="orbit-ring w-[500px] h-[500px]"></div>
         </div>
 
-        <div class="relative z-10 text-center max-w-md">
-            <h2 class="text-4xl font-bold text-slate-800 mb-6 leading-tight" id="hero-title">
+        <div class="relative z-10 text-center max-w-lg glass-panel p-10 rounded-3xl border border-white/5 shadow-2xl">
+            <div class="mb-6 flex justify-center">
+                <img src="https://www.tarmacq.com/Untitled%20(10).png" alt="Profile" class="w-24 h-24 rounded-full border-4 border-[#5b2fa6] shadow-[0_0_30px_rgba(91,47,166,0.6)]">
+            </div>
+            
+            <h2 class="text-4xl font-bold text-white mb-4 leading-tight" id="hero-title">
                 One account. <br/>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-purple-600">Infinite possibilities.</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Infinite possibilities.</span>
             </h2>
-            <p class="text-lg text-slate-500 mb-10" id="hero-sub">
+            <p class="text-lg text-gray-400 mb-0" id="hero-sub">
                 Access the entire tarmacq ecosystem with a single secure login. 
             </p>
-
-            <div class="w-48 h-48 mx-auto relative">
-                <div class="absolute inset-0 bg-gradient-to-tr from-brand-500 to-purple-500 rounded-[2rem] rotate-6 opacity-20 animate-float"></div>
-                <div class="absolute inset-0 bg-gradient-to-tr from-brand-600 to-cyan-500 rounded-[2rem] -rotate-6 opacity-20 animate-float" style="animation-delay: 0.5s"></div>
-                <div class="absolute inset-2 glass-card rounded-[1.5rem] shadow-2xl flex items-center justify-center border border-white/50 animate-float" style="animation-delay: 1s">
-                    <div class="relative">
-                        <div class="w-20 h-20 bg-gradient-to-br from-cyan-400 to-brand-600 rounded-2xl shadow-lg flex items-center justify-center text-white">
-                            <i data-lucide="hexagon" class="w-10 h-10"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -162,10 +237,10 @@
 
         const translations = {
             en: {
-                login_title: "Login",
-                login_subtitle: "Enter your credentials to access tarmacq.",
+                login_title: "Welcome Back",
+                login_subtitle: "Enter your credentials to access the universe.",
                 welcome_back: "Welcome back! 👋",
-                choose_account: "Choose an account",
+                choose_account: "Choose Account",
                 to_continue: "To continue to tarmacq",
                 use_another: "Use another account",
                 email_placeholder: "Email Address",
@@ -178,27 +253,26 @@
                 already_have: "Already have an account?",
                 register_link: "Register",
                 sign_in_link: "Sign In",
-                create_acc_title: "Create Account",
-                create_acc_sub: "Join tarmacq today.",
+                create_acc_title: "Join the Universe",
+                create_acc_sub: "Create your tarmacq identity.",
                 hero_text: "One account. Infinite possibilities.",
                 hero_sub: "Access the entire tarmacq ecosystem with a single secure login.",
-                active_session: "Active Session",
+                active_session: "Active",
                 sign_out: "Sign out",
                 signed_out_msg: "Successfully signed out",
-                // NEW OTP KEYS
                 verify_title: "Verify Account",
-                verify_subtitle: "We sent a 6-digit code to %s. Please check your inbox and spam folder.",
+                verify_subtitle: "We sent a code to %s.",
                 code_placeholder: "6-Digit Code",
-                verify_btn: "Verify Account",
+                verify_btn: "Verify Identity",
                 resend_code: "Resend Code",
                 resend_fail: "Failed to resend code: ",
                 resend_success: "Code successfully resent!",
-                invalid_code: "Invalid code or verification expired."
+                invalid_code: "Invalid code or verification expired.",
             },
             es: { // Spanish
-                login_title: "Iniciar Sesión",
+                login_title: "Bienvenido",
                 login_subtitle: "Ingrese sus credenciales para acceder.",
-                welcome_back: "¡Bienvenido de nuevo! 👋",
+                welcome_back: "¡Hola de nuevo! 👋",
                 choose_account: "Elige una cuenta",
                 to_continue: "Para continuar en tarmacq",
                 use_another: "Usar otra cuenta",
@@ -207,61 +281,59 @@
                 full_name: "Nombre Completo",
                 sign_in_btn: "Entrar",
                 create_account_btn: "Crear Cuenta",
-                keep_signed_in: "Mantener sesión iniciada",
+                keep_signed_in: "Mantener sesión",
                 dont_have_acc: "¿No tienes cuenta?",
                 already_have: "¿Ya tienes cuenta?",
                 register_link: "Regístrate",
                 sign_in_link: "Entrar",
-                create_acc_title: "Crear Cuenta",
-                create_acc_sub: "Únete a tarmacq hoy.",
+                create_acc_title: "Únete al Universo",
+                create_acc_sub: "Crea tu identidad tarmacq.",
                 hero_text: "Una cuenta. Posibilidades infinitas.",
                 hero_sub: "Accede a todo el ecosistema con un solo login.",
-                active_session: "Sesión Activa",
+                active_session: "Activa",
                 sign_out: "Cerrar sesión",
-                signed_out_msg: "Sesión cerrada exitosamente",
-                // NEW OTP KEYS
+                signed_out_msg: "Sesión cerrada",
                 verify_title: "Verificar Cuenta",
-                verify_subtitle: "Enviamos un código de 6 dígitos a %s. Por favor, revisa tu bandeja.",
+                verify_subtitle: "Enviamos un código a %s.",
                 code_placeholder: "Código de 6 dígitos",
-                verify_btn: "Verificar Cuenta",
+                verify_btn: "Verificar",
                 resend_code: "Reenviar Código",
-                resend_fail: "Error al reenviar código: ",
-                resend_success: "¡Código reenviado con éxito!",
-                invalid_code: "Código no válido o verificación caducada."
+                resend_fail: "Error: ",
+                resend_success: "¡Enviado!",
+                invalid_code: "Código no válido.",
             },
             fr: { // French
-                login_title: "Connexion",
+                login_title: "Bon retour",
                 login_subtitle: "Entrez vos identifiants pour accéder.",
-                welcome_back: "Bon retour ! 👋",
+                welcome_back: "Re-bonjour ! 👋",
                 choose_account: "Choisir un compte",
                 to_continue: "Pour continuer vers tarmacq",
-                use_another: "Utiliser un autre compte",
+                use_another: "Autre compte",
                 email_placeholder: "Adresse E-mail",
                 pass_placeholder: "Mot de passe",
                 full_name: "Nom Complet",
-                sign_in_btn: "Se connecter",
+                sign_in_btn: "Connexion",
                 create_account_btn: "Créer un compte",
                 keep_signed_in: "Rester connecté",
                 dont_have_acc: "Pas de compte ?",
                 already_have: "Vous avez déjà un compte ?",
                 register_link: "S'inscrire",
-                sign_in_link: "Se connecter",
-                create_acc_title: "Créer un compte",
-                create_acc_sub: "Rejoignez tarmacq aujourd'hui.",
+                sign_in_link: "Connexion",
+                create_acc_title: "Rejoindre l'Univers",
+                create_acc_sub: "Créez votre identité tarmacq.",
                 hero_text: "Un compte. Des possibilités infinies.",
                 hero_sub: "Accédez à tout l'écosystème tarmacq.",
-                active_session: "Session Active",
-                sign_out: "Se déconnecter",
-                signed_out_msg: "Déconnexion réussie",
-                // NEW OTP KEYS
-                verify_title: "Vérifier le Compte",
-                verify_subtitle: "Nous avons envoyé un code de 6 chiffres à %s. Veuillez vérifier votre boîte.",
+                active_session: "Active",
+                sign_out: "Déconnexion",
+                signed_out_msg: "Déconnecté",
+                verify_title: "Vérification",
+                verify_subtitle: "Code envoyé à %s.",
                 code_placeholder: "Code à 6 chiffres",
-                verify_btn: "Vérifier le Compte",
-                resend_code: "Renvoyer le code",
-                resend_fail: "Échec du renvoi du code : ",
-                resend_success: "Code renvoyé avec succès !",
-                invalid_code: "Code non valide ou vérification expirée."
+                verify_btn: "Vérifier",
+                resend_code: "Renvoyer",
+                resend_fail: "Échec : ",
+                resend_success: "Envoyé !",
+                invalid_code: "Code non valide.",
             }
         };
 
@@ -279,8 +351,9 @@
             
             const heroTitle = document.querySelector('#hero-title');
             if(heroTitle) {
+                // Update styling for Hero Text in language switch
                 heroTitle.innerHTML = translations[currentLang].hero_text.replace('.', '. <br/>')
-                .replace('Infinite possibilities', `<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-purple-600">${translations[currentLang].hero_text.split('.')[1]}</span>`);
+                .replace('Infinite possibilities', `<span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">${translations[currentLang].hero_text.split('.')[1]}</span>`);
             }
             const heroSub = document.querySelector('#hero-sub');
             if(heroSub) heroSub.innerText = translations[currentLang].hero_sub;
@@ -289,7 +362,6 @@
         function t(key, args = []) {
             let str = translations[currentLang][key] || translations['en'][key] || key;
             args.forEach((arg, index) => {
-                // Simple replacement for %s
                 str = str.replace(`%s`, arg);
             });
             return str;
@@ -348,7 +420,7 @@
         function rememberAccount(email, name) {
             const exists = state.savedAccounts.find(a => a.email === email);
             if (!exists) {
-                const colors = ['bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500', 'bg-rose-500', 'bg-cyan-500'];
+                const colors = ['bg-blue-600', 'bg-purple-600', 'bg-pink-600', 'bg-indigo-600'];
                 const randomColor = colors[Math.floor(Math.random() * colors.length)];
                 
                 state.savedAccounts.push({ 
@@ -388,40 +460,39 @@
                 case 'register':
                     container.innerHTML = getRegisterView();
                     break;
-                case 'verify_code': // ADDED NEW VIEW
+                case 'verify_code':
                     container.innerHTML = getVerifyCodeView(payload.email);
                     break;
             }
         }
 
-        // --- TEMPLATES ---
+        // --- TEMPLATES (Updated for Dark Theme / Glass) ---
         
         function getChooserView() {
             const accountsHtml = state.savedAccounts.map(acc => {
                 const isActive = state.activeSession && state.activeSession.user.email === acc.email;
                 
-                // Note: Changed to div wrapper to allow separate click handlers for the Card vs the Logout button
                 return `
                 <div class="relative group mb-3">
-                    <div onclick="selectAccount('${acc.email}')" class="cursor-pointer w-full flex items-center p-4 border ${isActive ? 'border-green-400 ring-1 ring-green-400 bg-green-50/50' : 'border-slate-200 bg-white'} rounded-xl hover:bg-slate-50 hover:border-blue-200 hover:shadow-sm transition-all text-left relative z-0">
+                    <div onclick="selectAccount('${acc.email}')" class="cursor-pointer w-full flex items-center p-4 border rounded-xl transition-all text-left relative z-0 glass-input ${isActive ? 'border-pink-500 bg-white/10' : 'hover:bg-white/10'}">
                         
-                        <div class="w-10 h-10 rounded-full ${acc.color} flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
+                        <div class="w-10 h-10 rounded-full ${acc.color} flex items-center justify-center text-white font-bold text-sm shadow-lg shrink-0 border border-white/20">
                             ${acc.name.charAt(0).toUpperCase()}
                         </div>
                         <div class="ml-4 flex-1 min-w-0 pr-8">
-                            <div class="font-semibold text-slate-700 hover:text-slate-900 truncate">${acc.name}</div>
-                            <div class="text-sm text-slate-500 truncate">${acc.email}</div>
+                            <div class="font-semibold text-white truncate">${acc.name}</div>
+                            <div class="text-sm text-gray-400 truncate">${acc.email}</div>
                         </div>
                         
-                        ${!isActive ? `<i data-lucide="arrow-right" class="w-4 h-4 text-slate-300 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all shrink-0"></i>` : ''}
+                        ${!isActive ? `<i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-pink-400 transform group-hover:translate-x-1 transition-all shrink-0"></i>` : ''}
                     </div>
 
                     ${isActive ? `
                         <div class="absolute top-[-8px] right-[-5px] z-20">
-                            <div class="bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm font-bold tracking-wide uppercase">${t('active_session')}</div>
+                            <div class="bg-[#ec4899] text-white text-[10px] px-2 py-0.5 rounded-full shadow-lg font-bold tracking-wide uppercase">${t('active_session')}</div>
                         </div>
                         
-                        <button onclick="handleLogout(event)" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors" title="${t('sign_out')}">
+                        <button onclick="handleLogout(event)" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 text-gray-400 hover:text-red-400 hover:bg-white/5 rounded-full transition-colors" title="${t('sign_out')}">
                              <i data-lucide="log-out" class="w-5 h-5"></i>
                         </button>
                     ` : ''}
@@ -431,13 +502,13 @@
             return `
                 <div class="animate-slide-up">
                     <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold mb-2 text-slate-900">${t('choose_account')}</h1>
-                        <p class="text-slate-500">${t('to_continue')}</p>
+                        <h1 class="text-3xl font-bold mb-2 text-white">${t('choose_account')}</h1>
+                        <p class="text-gray-400">${t('to_continue')}</p>
                     </div>
                     <div class="space-y-3">
                         ${accountsHtml}
-                        <button onclick="render('login')" class="w-full flex items-center p-4 border border-dashed border-slate-300 rounded-xl hover:bg-slate-50 hover:border-slate-400 transition-all text-left text-slate-600">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <button onclick="render('login')" class="w-full flex items-center p-4 border border-dashed border-gray-600 rounded-xl hover:bg-white/5 hover:border-gray-400 transition-all text-left text-gray-400 hover:text-white">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400">
                                 <i data-lucide="user-plus" class="w-5 h-5"></i>
                             </div>
                             <div class="ml-4 font-medium">${t('use_another')}</div>
@@ -455,11 +526,11 @@
             if (isRecognized) {
                 headerHtml = `
                     <div class="flex flex-col items-center mb-6">
-                        <button onclick="render('chooser')" class="w-16 h-16 rounded-full ${account.color} flex items-center justify-center text-white font-bold text-2xl mb-3 hover:ring-4 ring-blue-50 transition-all cursor-pointer shadow-md">
+                        <button onclick="render('chooser')" class="w-20 h-20 rounded-full ${account.color} flex items-center justify-center text-white font-bold text-3xl mb-4 hover:ring-4 ring-white/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.2)]">
                            ${account.name.charAt(0).toUpperCase()}
                         </button>
-                        <h1 class="text-2xl font-bold text-slate-900">${t('welcome_back')}</h1>
-                        <button onclick="render('chooser')" class="flex items-center text-sm text-slate-500 mt-1 hover:text-blue-600 group">
+                        <h1 class="text-2xl font-bold text-white">${t('welcome_back')}</h1>
+                        <button onclick="render('chooser')" class="flex items-center text-sm text-gray-400 mt-2 hover:text-pink-400 group transition-colors">
                           ${account.email} <i data-lucide="chevron-down" class="w-3 h-3 ml-1 group-hover:rotate-180 transition-transform"></i>
                         </button>
                     </div>
@@ -467,8 +538,8 @@
             } else {
                 headerHtml = `
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold mb-2 text-slate-900">${t('login_title')}</h1>
-                        <p class="text-slate-500">${t('login_subtitle')}</p>
+                        <h1 class="text-4xl font-bold mb-3 text-white">${t('login_title')}</h1>
+                        <p class="text-gray-400 leading-relaxed">${t('login_subtitle')}</p>
                     </div>
                 `;
             }
@@ -477,43 +548,42 @@
                 <div class="animate-slide-up">
                     <div class="text-center">${headerHtml}</div>
 
-                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <form onsubmit="handleLogin(event)" class="space-y-5">
                         ${!isRecognized ? `
-                        <div class="relative group input-group">
-                            <i data-lucide="mail" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
+                        <div class="relative group">
+                            <i data-lucide="mail" class="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-[#ec4899] transition-colors"></i>
                             <input type="email" id="email" name="email" required placeholder="${t('email_placeholder')}" value="${prefilledEmail}"
-                                class="w-full bg-white text-slate-900 pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400">
+                                class="w-full glass-input text-white pl-12 pr-4 py-3 rounded-full placeholder:text-gray-600">
                         </div>
                         ` : `<input type="hidden" id="email" value="${prefilledEmail}">`}
 
-                        <div class="relative group input-group">
-                            <i data-lucide="lock" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
+                        <div class="relative group">
+                            <i data-lucide="lock" class="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-[#ec4899] transition-colors"></i>
                             <input type="password" id="password" required placeholder="${t('pass_placeholder')}"
-                                class="w-full bg-white text-slate-900 pl-12 pr-12 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400">
-                            <button type="button" onclick="togglePassword('password')" class="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 focus:outline-none">
+                                class="w-full glass-input text-white pl-12 pr-12 py-3 rounded-full placeholder:text-gray-600">
+                            <button type="button" onclick="togglePassword('password')" class="absolute right-4 top-3.5 text-gray-500 hover:text-white focus:outline-none">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </button>
                         </div>
 
                         <button type="submit" id="submit-btn"
-                            class="w-full bg-brand-600 hover:bg-brand-900 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center">
+                            class="w-full btn-gradient font-semibold py-3.5 rounded-full flex items-center justify-center text-lg mt-2">
                             <span>${t('sign_in_btn')}</span>
                             <div id="spinner" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2"></div>
                         </button>
 
-                        <div class="flex items-center justify-between text-sm mt-4">
-                            <label class="flex items-center text-slate-500 cursor-pointer hover:text-slate-700">
-                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500 mr-2">
+                        <div class="flex items-center justify-between text-sm mt-4 px-2">
+                            <label class="flex items-center text-gray-400 cursor-pointer hover:text-white">
+                                <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-transparent text-pink-500 focus:ring-pink-500 mr-2 accent-pink-500">
                                 ${t('keep_signed_in')}
                             </label>
-                            <a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">${t('forgot_pass')}</a>
                         </div>
                     </form>
 
-                    <div class="pt-6 text-center">
-                        <p class="text-slate-500 text-sm">
+                    <div class="pt-8 text-center">
+                        <p class="text-gray-500 text-sm">
                             ${t('dont_have_acc')} 
-                            <button onclick="render('register')" class="text-slate-900 font-semibold hover:underline underline-offset-4">
+                            <button onclick="render('register')" class="text-white font-semibold hover:text-[#ec4899] transition-colors ml-1">
                                 ${t('register_link')}
                             </button>
                         </p>
@@ -526,43 +596,43 @@
             return `
                 <div class="animate-slide-up">
                     <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold mb-2 text-slate-900">${t('create_acc_title')}</h1>
-                        <p class="text-slate-500">${t('create_acc_sub')}</p>
+                        <h1 class="text-3xl font-bold mb-2 text-white">${t('create_acc_title')}</h1>
+                        <p class="text-gray-400">${t('create_acc_sub')}</p>
                     </div>
 
                     <form onsubmit="handleRegister(event)" class="space-y-4">
-                        <div class="relative group input-group">
-                            <i data-lucide="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
+                        <div class="relative group">
+                            <i data-lucide="user" class="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-[#ec4899] transition-colors"></i>
                             <input type="text" id="reg-name" required placeholder="${t('full_name')}"
-                                class="w-full bg-white text-slate-900 pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400">
+                                class="w-full glass-input text-white pl-12 pr-4 py-3 rounded-full placeholder:text-gray-600">
                         </div>
 
-                        <div class="relative group input-group">
-                            <i data-lucide="mail" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
+                        <div class="relative group">
+                            <i data-lucide="mail" class="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-[#ec4899] transition-colors"></i>
                             <input type="email" id="reg-email" required placeholder="${t('email_placeholder')}"
-                                class="w-full bg-white text-slate-900 pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400">
+                                class="w-full glass-input text-white pl-12 pr-4 py-3 rounded-full placeholder:text-gray-600">
                         </div>
 
-                        <div class="relative group input-group">
-                            <i data-lucide="lock" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
+                        <div class="relative group">
+                            <i data-lucide="lock" class="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-[#ec4899] transition-colors"></i>
                             <input type="password" id="reg-password" required placeholder="${t('pass_placeholder')}"
-                                class="w-full bg-white text-slate-900 pl-12 pr-12 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400">
-                             <button type="button" onclick="togglePassword('reg-password')" class="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 focus:outline-none">
+                                class="w-full glass-input text-white pl-12 pr-12 py-3 rounded-full placeholder:text-gray-600">
+                             <button type="button" onclick="togglePassword('reg-password')" class="absolute right-4 top-3.5 text-gray-500 hover:text-white focus:outline-none">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </button>
                         </div>
 
                         <button type="submit" id="submit-btn"
-                            class="w-full bg-brand-600 hover:bg-brand-900 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center">
+                            class="w-full btn-gradient font-semibold py-3.5 rounded-full flex items-center justify-center text-lg mt-4">
                             <span>${t('create_account_btn')}</span>
                             <div id="spinner" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2"></div>
                         </button>
                     </form>
 
-                    <div class="pt-4 text-center">
-                        <p class="text-slate-500 text-sm">
+                    <div class="pt-6 text-center">
+                        <p class="text-gray-500 text-sm">
                             ${t('already_have')} 
-                            <button onclick="determineInitialView()" class="text-slate-900 font-semibold hover:underline underline-offset-4">
+                            <button onclick="determineInitialView()" class="text-white font-semibold hover:text-[#ec4899] transition-colors ml-1">
                                 ${t('sign_in_link')}
                             </button>
                         </p>
@@ -571,31 +641,32 @@
             `;
         }
 
-        // --- NEW VIEW TEMPLATE FOR OTP ---
         function getVerifyCodeView(email) {
             return `
                 <div class="animate-slide-up">
                     <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold mb-2 text-slate-900">${t('verify_title')}</h1>
-                        <p class="text-slate-500">${t('verify_subtitle', [email])}</p>
+                        <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 text-[#ec4899]">
+                            <i data-lucide="shield-check" class="w-8 h-8"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-2 text-white">${t('verify_title')}</h1>
+                        <p class="text-gray-400 text-sm max-w-[280px] mx-auto">${t('verify_subtitle', [email])}</p>
                     </div>
 
                     <form onsubmit="handleCodeVerification(event, '${email}')" class="space-y-6">
-                        <div class="relative group input-group">
-                            <i data-lucide="key-round" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 transition-colors"></i>
-                            <input type="text" id="verification-code" required placeholder="${t('code_placeholder')}" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
-                                class="w-full bg-white text-slate-900 pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-400 text-center text-lg font-mono tracking-widest">
+                        <div class="relative group">
+                            <input type="text" id="verification-code" required placeholder="000000" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+                                class="w-full glass-input text-white py-4 rounded-full text-center text-3xl font-mono tracking-[0.5em] placeholder:text-gray-700 placeholder:tracking-normal focus:border-[#ec4899]">
                         </div>
 
                         <button type="submit" id="submit-code-btn"
-                            class="w-full bg-brand-600 hover:bg-brand-900 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center">
+                            class="w-full btn-gradient font-semibold py-3.5 rounded-full flex items-center justify-center text-lg">
                             <span>${t('verify_btn')}</span>
                             <div id="spinner-code" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2"></div>
                         </button>
                         
-                        <p class="pt-2 text-center text-sm text-slate-500">
+                        <p class="pt-2 text-center text-sm text-gray-500">
                             Didn't receive the code? 
-                            <button type="button" onclick="resendCode('${email}')" class="text-brand-600 font-semibold hover:underline">
+                            <button type="button" onclick="resendCode('${email}')" class="text-[#ec4899] font-semibold hover:underline">
                                 ${t('resend_code')}
                             </button>
                         </p>
@@ -603,25 +674,22 @@
                 </div>
             `;
         }
-        // --- END NEW VIEW TEMPLATE ---
 
         // --- ACTIONS & HANDLERS ---
 
         function selectAccount(email) {
-            // CHECK IF THIS ACCOUNT IS THE ACTIVE ONE
             if (state.activeSession && state.activeSession.user.email === email) {
-                showToast(t('welcome_back') + " " + state.activeSession.user.email, "success");
+                showToast(t('welcome_back'), "success");
                 setTimeout(() => {
                     window.location.href = REDIRECT_URL;
                 }, 500);
                 return;
             }
-            // Otherwise, ask for login
             render('login', { email });
         }
 
         async function handleLogout(e) {
-            e.stopPropagation(); // Prevent triggering the "Select Account" click
+            e.stopPropagation(); 
             
             if(!supabase) return;
 
@@ -629,11 +697,8 @@
                 const { error } = await supabase.auth.signOut();
                 if (error) throw error;
                 
-                // Clear local session state
                 state.activeSession = null;
                 showToast(t('signed_out_msg'), "success");
-                
-                // Re-render the view to remove the "Active" badge and logout button
                 render('chooser');
 
             } catch (err) {
@@ -668,14 +733,12 @@
 
                 if (error) throw error;
 
-                // SUCCESS
                 console.log("Login Successful:", data);
                 showToast("Login Successful! Redirecting...", "success");
                 
                 const displayName = data.user.user_metadata?.full_name || email.split('@')[0];
                 rememberAccount(email, displayName);
                 
-                // >>> REDIRECT LOGIC <<<
                 setTimeout(() => {
                     window.location.href = REDIRECT_URL;
                 }, 1500); 
@@ -687,7 +750,6 @@
             }
         }
 
-        // MODIFIED FUNCTION FOR OTP FLOW
         async function handleRegister(e) {
             e.preventDefault();
             if(!supabase) {
@@ -711,25 +773,17 @@
 
                 if (error) throw error;
 
-                console.log("Registration Successful:", data);
-                
-                // --- OTP FLOW CHANGE START ---
-                // Supabase is set to 'Email OTP', so data.session will be null, but data.user will be present.
                 if (data.user) {
-                    showToast("Registration successful! Check your email for the code.", "success");
+                    showToast("Registration successful! Check your email.", "success");
                     setLoading(false, 'submit-btn', 'spinner');
-                    
-                    // RENDER THE NEW CODE ENTRY SCREEN
                     render('verify_code', { email }); 
                 } else {
-                    // Fallback for unexpected immediate session (link-based)
                     showToast("Account created! Redirecting...", "success");
                     rememberAccount(email, name);
                     setTimeout(() => {
                         window.location.href = REDIRECT_URL;
                     }, 1500);
                 }
-                // --- OTP FLOW CHANGE END ---
 
             } catch (err) {
                 console.error("Registration Error:", err);
@@ -738,7 +792,6 @@
             }
         }
 
-        // NEW FUNCTION: Handles the verification code exchange.
         async function handleCodeVerification(e, email) {
             e.preventDefault();
             if(!supabase) return;
@@ -747,19 +800,16 @@
             setLoading(true, 'submit-code-btn', 'spinner-code');
             
             try {
-                // Use the verifyOtp method, specifying the type as 'signup'
                 const { data, error } = await supabase.auth.verifyOtp({
                     email: email,
                     token: code,
-                    type: 'signup', // Crucial: tells Supabase this is for registration confirmation
+                    type: 'signup', 
                 });
 
                 if (error) throw error;
 
-                // Success: User is now signed in and verified
                 showToast("Verification successful! Redirecting...", "success");
                 
-                // Remember the account and redirect
                 const displayName = data.user.user_metadata?.full_name || email.split('@')[0];
                 rememberAccount(email, displayName); 
 
@@ -774,7 +824,6 @@
             }
         }
 
-        // NEW FUNCTION: Resends the OTP code.
         async function resendCode(email) {
             showToast("Resending code...", "success");
             const { error } = await supabase.auth.resend({
@@ -791,7 +840,6 @@
 
         // --- UI UTILS ---
 
-        // MODIFIED FUNCTION to accept custom button/spinner IDs
         function setLoading(isLoading, btnId = 'submit-btn', spinnerId = 'spinner') {
             const btn = document.getElementById(btnId);
             if(!btn) return;
@@ -801,12 +849,10 @@
 
             if (isLoading) {
                 btn.disabled = true;
-                btn.classList.add('opacity-75', 'cursor-not-allowed');
                 if(spinner) spinner.classList.remove('hidden');
                 if(span) span.style.display = 'none';
             } else {
                 btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
                 if(spinner) spinner.classList.add('hidden');
                 if(span) span.style.display = 'block';
             }
