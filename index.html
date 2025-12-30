@@ -390,7 +390,7 @@ function initApp() {
 async function checkSession() {
     if(!window.supabaseClient) return; // Change this
     const { data: { session } } = await window.supabaseClient.auth.getSession();
-}
+
             if (session) {
                 state.activeSession = session;
                 const displayName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
