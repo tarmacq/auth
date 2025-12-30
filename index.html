@@ -230,8 +230,8 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_F0QWv6J1ienKfeJSmHPX8Q_BcSVNQX3';
         const REDIRECT_URL = "https://www.tarmacq.com/"; 
         
-        // GLOBAL CLIENT VARIABLE (Fixed)
-        let supabase = null;
+        // FIXED: Renamed to avoid collision with global 'supabase' object from the CDN
+        let supabaseClient = null;
         // ==========================================
 
         // --- LANGUAGE SYSTEM ---
@@ -406,8 +406,9 @@
             }
             
             // Initialize Supabase Client correctly
+            // We use 'supabaseClient' to avoid conflict with 'window.supabase'
             if (window.supabase) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             } else {
                 console.error("Supabase library not loaded");
                 showToast("Error loading Supabase", "error");
@@ -418,9 +419,9 @@
         }
 
         async function checkSession() {
-            if(!supabase) return;
+            if(!supabaseClient) return;
 
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
 
             if (session) {
                 state.activeSession = session;
@@ -727,10 +728,10 @@
         async function handleLogout(e) {
             e.stopPropagation(); 
             
-            if(!supabase) return;
+            if(!supabaseClient) return;
 
             try {
-                const { error } = await supabase.auth.signOut();
+                const { error } = await supabaseClient.auth.signOut();
                 if (error) throw error;
                 
                 state.activeSession = null;
@@ -752,7 +753,7 @@
 
         async function handleLogin(e) {
             e.preventDefault();
-            if(!supabase) {
+            if(!supabaseClient) {
                 showToast("Configuration Error: Supabase client not ready.", "error");
                 return;
             }
@@ -762,7 +763,7 @@
             const password = document.getElementById('password').value;
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
@@ -788,7 +789,7 @@
 
         async function handleRegister(e) {
             e.preventDefault();
-            if(!supabase) {
+            if(!supabaseClient) {
                 showToast("Configuration Error: Supabase client not ready", "error");
                 return;
             }
@@ -799,7 +800,7 @@
             const name = document.getElementById('reg-name').value;
 
             try {
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                     options: {
@@ -830,13 +831,13 @@
 
         async function handleCodeVerification(e, email) {
             e.preventDefault();
-            if(!supabase) return;
+            if(!supabaseClient) return;
 
             const code = document.getElementById('verification-code').value;
             setLoading(true, 'submit-code-btn', 'spinner-code');
             
             try {
-                const { data, error } = await supabase.auth.verifyOtp({
+                const { data, error } = await supabaseClient.auth.verifyOtp({
                     email: email,
                     token: code,
                     type: 'signup', 
@@ -862,7 +863,7 @@
 
         async function resendCode(email) {
             showToast("Resending code...", "success");
-            const { error } = await supabase.auth.resend({
+            const { error } = await supabaseClient.auth.resend({
                 type: 'signup',
                 email: email,
             });
