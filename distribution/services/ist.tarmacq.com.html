@@ -223,7 +223,6 @@
     <div id="toast"></div>
 
     <script>
-       <script>
         // ==========================================
         // 1. CONFIGURATION
         // ==========================================
@@ -357,7 +356,6 @@
             currentLang = langs[nextIndex];
             updateLanguageUI();
             
-            // Re-render current view to apply translation
             if(state.view) render(state.view);
         }
 
@@ -368,7 +366,6 @@
             if(heroTitle) {
                 const text = translations[currentLang].hero_text;
                 const parts = text.split('.');
-                // Handle split for infinite possibilities gradient
                 if (parts.length > 1) {
                      heroTitle.innerHTML = `${parts[0]}. <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">${parts[1]}</span>`;
                 } else {
@@ -392,7 +389,6 @@
         function initApp() {
             detectLanguage();
             
-            // Attach Language Toggle Listener
             const langBtn = document.getElementById('lang-btn');
             if(langBtn) {
                 langBtn.addEventListener('click', toggleLanguage);
@@ -404,8 +400,6 @@
                 return;
             }
             
-            // Initialize Supabase Client correctly
-            // We use 'supabaseClient' to avoid conflict with 'window.supabase'
             if (window.supabase) {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             } else {
@@ -453,7 +447,6 @@
         }
 
         function rememberAccount(email, name) {
-            // Remove existing entry for this email if present (to update it)
             state.savedAccounts = state.savedAccounts.filter(a => a.email !== email);
 
             const colors = ['bg-blue-600', 'bg-purple-600', 'bg-pink-600', 'bg-indigo-600'];
@@ -483,7 +476,6 @@
             state.view = viewName;
             container.innerHTML = '';
             
-            // Defer icon creation slightly to allow DOM update
             setTimeout(() => lucide.createIcons(), 50);
 
             switch(viewName) {
@@ -712,30 +704,24 @@
         }
 
         // --- ACTIONS & HANDLERS ---
-        
-        // This helper securely passes the session to ist.tarmacq.com
+
+        // FIXED: New helper function to pass the session via URL fragment
         function redirectWithSession(session) {
             if (!session) {
                 window.location.href = REDIRECT_URL;
                 return;
             }
             
-            // Construct the standard Supabase hash format
-            const hash = new URLSearchParams({
-                access_token: session.access_token,
-                refresh_token: session.refresh_token,
-                expires_in: session.expires_in,
-                token_type: session.token_type,
-                type: 'recovery' 
-            }).toString();
-
-            window.location.href = `${REDIRECT_URL}#${hash}`;
+            // Construct a URL hash that Supabase client on the receiving end will understand
+            const sessionHash = `access_token=${session.access_token}&refresh_token=${session.refresh_token}&expires_in=${session.expires_in}&token_type=${session.token_type}&type=recovery`;
+            window.location.href = `${REDIRECT_URL}#${sessionHash}`;
         }
 
         function selectAccount(email) {
             if (state.activeSession && state.activeSession.user.email === email) {
                 showToast(t('welcome_back'), "success");
                 setTimeout(() => {
+                    // FIXED: Use redirectWithSession
                     redirectWithSession(state.activeSession);
                 }, 500);
                 return;
@@ -795,6 +781,7 @@
                 rememberAccount(email, displayName);
                 
                 setTimeout(() => {
+                    // FIXED: Use redirectWithSession
                     redirectWithSession(data.session);
                 }, 1500); 
                 
@@ -836,6 +823,7 @@
                     showToast("Account created! Redirecting...", "success");
                     rememberAccount(email, name);
                     setTimeout(() => {
+                        // FIXED: Use redirectWithSession
                         redirectWithSession(data.session);
                     }, 1500);
                 }
@@ -869,6 +857,7 @@
                 rememberAccount(email, displayName); 
 
                 setTimeout(() => {
+                    // FIXED: Use redirectWithSession
                     redirectWithSession(data.session);
                 }, 1500);
 
@@ -926,7 +915,7 @@
             initApp();
         });
 
-    </script>
+    
     </script>
 </body>
 </html>
