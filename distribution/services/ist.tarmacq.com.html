@@ -223,6 +223,7 @@
     <div id="toast"></div>
 
     <script>
+       <script>
         // ==========================================
         // 1. CONFIGURATION
         // ==========================================
@@ -230,9 +231,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_F0QWv6J1ienKfeJSmHPX8Q_BcSVNQX3';
         const REDIRECT_URL = "https://ist.tarmacq.com/"; 
         
-        // FIXED: Renamed to avoid collision with global 'supabase' object from the CDN
         let supabaseClient = null;
-        // ==========================================
 
         // --- LANGUAGE SYSTEM ---
         let currentLang = 'en';
@@ -713,12 +712,31 @@
         }
 
         // --- ACTIONS & HANDLERS ---
+        
+        // This helper securely passes the session to ist.tarmacq.com
+        function redirectWithSession(session) {
+            if (!session) {
+                window.location.href = REDIRECT_URL;
+                return;
+            }
+            
+            // Construct the standard Supabase hash format
+            const hash = new URLSearchParams({
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+                expires_in: session.expires_in,
+                token_type: session.token_type,
+                type: 'recovery' 
+            }).toString();
+
+            window.location.href = `${REDIRECT_URL}#${hash}`;
+        }
 
         function selectAccount(email) {
             if (state.activeSession && state.activeSession.user.email === email) {
                 showToast(t('welcome_back'), "success");
                 setTimeout(() => {
-                    window.location.href = REDIRECT_URL;
+                    redirectWithSession(state.activeSession);
                 }, 500);
                 return;
             }
@@ -777,7 +795,7 @@
                 rememberAccount(email, displayName);
                 
                 setTimeout(() => {
-                    window.location.href = REDIRECT_URL;
+                    redirectWithSession(data.session);
                 }, 1500); 
                 
             } catch (err) {
@@ -818,7 +836,7 @@
                     showToast("Account created! Redirecting...", "success");
                     rememberAccount(email, name);
                     setTimeout(() => {
-                        window.location.href = REDIRECT_URL;
+                        redirectWithSession(data.session);
                     }, 1500);
                 }
 
@@ -851,7 +869,7 @@
                 rememberAccount(email, displayName); 
 
                 setTimeout(() => {
-                    window.location.href = REDIRECT_URL;
+                    redirectWithSession(data.session);
                 }, 1500);
 
             } catch (err) {
@@ -908,6 +926,7 @@
             initApp();
         });
 
+    </script>
     </script>
 </body>
 </html>
